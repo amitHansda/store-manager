@@ -1,0 +1,84 @@
+﻿@inject Dapr.Client.DaprClient Dapr
+@inject StoreFront.Brokers.OrdersEventBroker Broker
+@implements IDisposable
+
+
+
+<div class="card mb-3" style="max-width: 20rem;">
+    <div class="card-header text-white bg-primary">
+        Product # @Product.Id
+    </div>
+    <div class="card-body">
+        <h4 class="card-title">@Product.Title</h4>
+        <h5>
+            Price $@Product.Price
+        </h5>
+        @if (status is object)
+        {
+            <p>@status</p>
+        }
+        @if (processing)
+        {
+            <p>Please wait...</p>
+        }
+        else
+        {
+            <button class="btn btn-outline-success" @onclick="@PlaceOrderAsync">BUY!!!</button>
+        }
+
+    </div>
+</div>
+
+@code {
+    [Parameter] public Product Product { get; set; } = default!;
+    bool processing;
+    string? status;
+    private CancellationTokenSource? cts;
+
+
+    async Task PlaceOrderAsync()
+    {
+        if (processing)
+        {
+            return;
+        }
+
+        try
+        {
+            processing = true;
+
+            var orderId = Guid.NewGuid().ToString();
+            cts = new CancellationTokenSource();
+
+            var task = Broker.GetOrderConfirmationAsync(orderId, cts.Token);
+
+            await Dapr.PublishEventAsync("orderplaced", new Order()
+            {
+                ProductId = Product.Id,
+                OrderId = orderId,
+            });
+
+            var confirmation = await task;
+            if (confirmation.Confirmed)
+            {
+                status = $"Confirmed! Order will arrive by {confirmation.DeliveryDate!.Value.ToString("MM/dd/yyyy")}. {confirmation.RemainingCount} are left.";
+            }
+            else
+            {
+                status = $"Sorry, we're sold out of that. There are {confirmation.BackorderCount} people ahead of you in line.";
+            }
+        }
+        finally
+        {
+            processing = false;
+            cts?.Dispose();
+            cts = null;
+        }
+    }
+
+    void IDisposable.Dispose()
+    {
+        cts?.Dispose();
+    }
+
+}

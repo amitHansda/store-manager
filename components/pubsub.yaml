@@ -1,0 +1,21 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: messagebus
+spec:
+  type: pubsub.rabbitmq
+  metadata:
+  - name: host
+    value: "amqp://admin:admin@localhost:5672"
+  - name: consumerID
+    value: '065907f6b17446318cad7fe4834a5039' # Required. Any unique ID. Example: "myConsumerID"
+  - name: durable
+    value: 'false' # Optional. Default: "false"
+  - name: deletedWhenUnused
+    value: "false" # Optional. Default: "false"
+  - name: autoAck
+    value: "false" # Optional. Default: "false"
+  - name: deliveryMode
+    value: 0 # Optional. Default: "0". Values between 0 - 2.
+  - name: requeueInFailure
+    value: "false" # Optional. Default: "false".

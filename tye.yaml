@@ -1,0 +1,14 @@
+name: store-manager
+
+extensions:
+ - name: dapr
+   log-level: debug
+   components-path: "components/"
+
+services:
+ - name: inventory
+   project: "./Inventory/Inventory.csproj"
+ - name: storefront
+   project: "./Store/StoreFront.csproj"
+ - name: orders
+   project: "./Order/OrderService.csproj"
