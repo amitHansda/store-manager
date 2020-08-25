@@ -44,7 +44,8 @@ namespace OrderService
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            // --IMPORTANT HttpsRedirection should be commented
+           // app.UseHttpsRedirection();
 
             app.UseOpenApi();
             app.UseSwaggerUi3();
