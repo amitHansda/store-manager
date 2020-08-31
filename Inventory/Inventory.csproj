@@ -6,7 +6,7 @@
 
   <ItemGroup>
 	<PackageReference Include="NSwag.AspNetCore" Version="13.7.0" />
-	<PackageReference Include="Dapr.AspNetCore" Version="0.8.0-preview01" />
+	<PackageReference Include="Dapr.AspNetCore" Version="0.10.0-preview01" />
   </ItemGroup>
 
   <ItemGroup>

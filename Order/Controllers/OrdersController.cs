@@ -20,7 +20,7 @@ namespace OrderService.Controllers
         }
 
 
-        [Topic("orderplaced")]
+        [Topic("messagebus", "orderplaced")]
         [HttpPost("orderplaced")]
         public async Task PlaceOrder(Order order,[FromServices]DaprClient daprClient)
         {
@@ -49,7 +49,7 @@ namespace OrderService.Controllers
                     BackorderCount = -1 * state.Value.Remaining
                 };
 
-            await daprClient.PublishEventAsync("orderprocessed", confirmation);
+            await daprClient.PublishEventAsync("messagebus", "orderprocessed", confirmation);
             _logger.LogInformation("Processed Order {OrderId}", confirmation.OrderId);
         }
     }

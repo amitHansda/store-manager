@@ -70,7 +70,7 @@ namespace StoreFront
                 {
                     var confirmation = await JsonSerializer.DeserializeAsync<OrderConfirmation>(context.Request.Body);
                     broker.Complete(confirmation);
-                }).WithTopic("orderprocessed");
+                }).WithTopic("messagebus", "orderprocessed");
             });
         }
     }
