@@ -33,6 +33,7 @@ namespace OrderService.Controllers
             }
 
             state.Value.Remaining--;
+            await daprClient.SaveStateAsync("statestore",order.ProductId.ToString(),state.Value);
             _logger.LogInformation("Updated inventory for {ProductId} to {stocks} remaining", order.ProductId, state.Value.Remaining);
 
             OrderConfirmation confirmation = state.Value.Remaining >= 0 ?
